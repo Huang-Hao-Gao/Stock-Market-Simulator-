@@ -4,12 +4,23 @@ from matplotlib import pyplot as plt
 class Stock:
     
     
-    def __init__(self, init, years):
-        self.init = init
-        self.years = years
+    def __init__(self):
+        self.init = self.user_input("initial stock price", "What should the initial price of our stock be")
+        self.years = 1
         stock_prices = self.create_stock()
         self.plot_stock(stock_prices)
 
+
+    def user_input(self, type: str, msg: str) -> int:
+        print("{}:".format(msg), end=" ")
+        val = input()
+        try:
+                val = int(val)
+                print("{}: {}".format(type, val))
+                return val
+        except ValueError:
+            print("Error: Please enter a valid integer")
+            return self.user_input(type, msg)
 
     def create_stock(self):
         days = self.years * 365
@@ -22,8 +33,6 @@ class Stock:
             change = (1+ran.choices(percents, k=1)[0]/100)
             cur = cur * change
             stock_prices.append(cur)
-            # print("percent:" + str(change) + "\ncurrent:" + str(cur))
-            # print("\n\n")
         print("Initial Stock Price:" + str(self.init))
         print("Final Stock Price:" + str(round(cur, 2)))
         
@@ -38,7 +47,7 @@ class Stock:
     
 
 def main():
-    myStock = Stock(100, 1)
+    Stock()
     
 
 if __name__ == "__main__":
