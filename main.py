@@ -5,10 +5,25 @@ class Stock:
     
     
     def __init__(self):
-        self.init = self.user_input("initial stock price", "What should the initial price of our stock be")
-        self.years = 1
+        self.init_stock_price = 10
+        self.investment = self.user_input("Initial Investment", "How much do you want to invest")
+        self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
         stock_prices = self.create_stock()
+        self.final_stock_price = stock_prices[-1]
+        self.calc_return()
         self.plot_stock(stock_prices)
+
+
+
+    def calc_return(self):
+        self.investment
+        self.final_stock_price
+        
+        no_stocks = self.investment/self.init_stock_price
+        pl = round(self.final_stock_price * no_stocks - self.investment, 2)
+        
+        print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nFinal Stock Price: £{}\nReturn: £{}".format(self.init_stock_price, self.investment, round(no_stocks, 2), round(self.final_stock_price, 2), pl))
+        return pl
 
 
     def user_input(self, type: str, msg: str) -> int:
@@ -16,7 +31,7 @@ class Stock:
         val = input()
         try:
                 val = int(val)
-                print("{}: {}".format(type, val))
+                print("{}: {}\n".format(type, val))
                 return val
         except ValueError:
             print("Error: Please enter a valid integer")
@@ -25,17 +40,14 @@ class Stock:
     def create_stock(self):
         days = self.years * 365
         percents = [x/10 for x in range(-20, 41, 1)]
-        stock_prices = [self.init]
+        stock_prices = [self.init_stock_price]
 
 
-        cur = self.init
+        cur = self.init_stock_price
         for _ in range(days):
             change = (1+ran.choices(percents, k=1)[0]/100)
             cur = cur * change
             stock_prices.append(cur)
-        print("Initial Stock Price:" + str(self.init))
-        print("Final Stock Price:" + str(round(cur, 2)))
-        
         return stock_prices
         
 
