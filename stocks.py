@@ -7,8 +7,10 @@ class Stock(ABC):
     
     def __init__(self):
         self.init_stock_price = 10.0
-        self.investment = self.user_input("Initial Investment", "How much do you want to invest")
-        self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
+        # self.investment = self.user_input("Initial Investment", "How much do you want to invest")
+        # self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
+        self.investment = 1000
+        self.years = 10
         stock_prices = self.create_stock()
         self.final_stock_price = stock_prices[-1]
         self.calc_return()
@@ -19,10 +21,13 @@ class Stock(ABC):
         self.final_stock_price
         
         no_stocks = self.investment/self.init_stock_price
-        pl = round(self.final_stock_price * no_stocks - self.investment, 2)
+        gross = self.final_stock_price * no_stocks
+        net = round(gross - self.investment, 2)
+        ROI = round(net / self.investment * 100, 2)
+
         
-        print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nFinal Stock Price: £{}\nReturn: £{}".format(self.init_stock_price, self.investment, round(no_stocks, 2), round(self.final_stock_price, 2), pl))
-        return pl
+        print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nFinal Stock Price: £{}\nFinal Amount: £{}\nReturn: £{}\n Return on Investment: {}%".format(self.init_stock_price, self.investment, round(no_stocks, 2), round(self.final_stock_price, 2), round(gross, 2), net, ROI))
+        return net
 
     def user_input(self, type: str, msg: str) -> int:
         print("{}:".format(msg), end=" ")
@@ -41,26 +46,26 @@ class Stock(ABC):
         
 
     def plot_stock(self, xs):
-        days = [x for x in range(len(xs))]
-        plt.plot(days, xs)
-        plt.show()    
-
-
-# class default_stock(Stock):
-    
-#     def __init__(self):
-#         super().__init__()
+        threshold_years = 2  # Change this to whatever threshold you want
         
-#     def create_stock(self) -> list[float]:
-#         days = self.years * 365
-#         percents = [x/10 for x in range(-20, 41, 1)]
-#         stock_prices = [self.init_stock_price]
-#         cur = self.init_stock_price
-#         for _ in range(days):
-#             change = (1+ran.choices(percents, k=1)[0]/100)
-#             cur = cur * change
-#             stock_prices.append(cur)
-#         return stock_prices
+        if self.years <= threshold_years:
+            # Show days on x-axis
+            days = [x for x in range(len(xs))]
+            plt.plot(days, xs)
+            plt.xlabel("Days")
+            plt.title(f"Stock Price Over {len(xs)} Days")
+        else:
+            # Show years on x-axis
+            # Convert day indices to years (day 0 = year 0, day 365 = year 1, etc.)
+            days_to_years = [day / 365 for day in range(len(xs))]
+            plt.plot(days_to_years, xs)
+            plt.xlabel("Years")
+            plt.title(f"Stock Price Over {self.years} Years")
+        
+        plt.ylabel("Stock Price (£)")
+        plt.grid(True, alpha=0.3)  # Optional: adds a subtle grid
+        plt.show() 
+
 
 class default_stock(Stock):
     
@@ -74,22 +79,21 @@ class default_stock(Stock):
         current_price = self.init_stock_price
         
         for day in range(days):
-            # Simple approach: 70% chance of going up, 30% chance of going down
-            if ran.random() < 0.55:
+            if ran.random() > 0.4:
                 # Stock goes up 
-                daily_change = ran.uniform(1.001, 1.01)
+                daily_change = ran.uniform(1.0001, 1.002)
             else:
                 # Stock goes down
-                daily_change = ran.uniform(0.99, 0.999)
+                daily_change = ran.uniform(0.998, 0.9999)
             
             # Occasionally add larger movements for realism
-            if ran.random() < 0.1:  # 5% chance of larger movement
+            if ran.random() < 0.02: 
                 if ran.random() < 0.5:
                     # Big gain
-                    daily_change = ran.uniform(1.01, 1.1)
+                    daily_change = ran.uniform(1.001, 1.05)
                 else:
                     # Big loss
-                    daily_change = ran.uniform(0.93, 0.99)
+                    daily_change = ran.uniform(0.95, 0.995)
             
             current_price *= daily_change
             stock_prices.append(current_price)
