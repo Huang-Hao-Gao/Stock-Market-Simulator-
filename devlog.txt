@@ -1,3 +1,4 @@
 1. Built a basic model of a stock: One variable which will change price everyday. The amount that it changes is determined by a random percentage that is selected from an array. if it chooses 4% then the price for that day will be multiplied by 1.04
 2. implemented matplotlib to plot the price of the stock against the day 
 3. implemented an initial investment and no. years to invest for, calculation of the no. stocks bought and the return of the investment at the end. Terminal now gives more detail about initial and final stock price as well as the overall return. 
+4. Made the stock class an abstract class, meaning its create_stock() is abstract and needs to be overridden. The plan is to have different types of stocks inherit this main stock, allowing me to make multiple stocks to choose from. 

@@ -46,6 +46,22 @@ class Stock(ABC):
         plt.show()    
 
 
+# class default_stock(Stock):
+    
+#     def __init__(self):
+#         super().__init__()
+        
+#     def create_stock(self) -> list[float]:
+#         days = self.years * 365
+#         percents = [x/10 for x in range(-20, 41, 1)]
+#         stock_prices = [self.init_stock_price]
+#         cur = self.init_stock_price
+#         for _ in range(days):
+#             change = (1+ran.choices(percents, k=1)[0]/100)
+#             cur = cur * change
+#             stock_prices.append(cur)
+#         return stock_prices
+
 class default_stock(Stock):
     
     def __init__(self):
@@ -53,11 +69,31 @@ class default_stock(Stock):
         
     def create_stock(self) -> list[float]:
         days = self.years * 365
-        percents = [x/10 for x in range(-20, 41, 1)]
         stock_prices = [self.init_stock_price]
-        cur = self.init_stock_price
-        for _ in range(days):
-            change = (1+ran.choices(percents, k=1)[0]/100)
-            cur = cur * change
-            stock_prices.append(cur)
+        
+        current_price = self.init_stock_price
+        
+        for day in range(days):
+            # Simple approach: 70% chance of going up, 30% chance of going down
+            if ran.random() < 0.55:
+                # Stock goes up 
+                daily_change = ran.uniform(1.001, 1.01)
+            else:
+                # Stock goes down
+                daily_change = ran.uniform(0.99, 0.999)
+            
+            # Occasionally add larger movements for realism
+            if ran.random() < 0.1:  # 5% chance of larger movement
+                if ran.random() < 0.5:
+                    # Big gain
+                    daily_change = ran.uniform(1.01, 1.1)
+                else:
+                    # Big loss
+                    daily_change = ran.uniform(0.93, 0.99)
+            
+            current_price *= daily_change
+            stock_prices.append(current_price)
+        
         return stock_prices
+        
+    
