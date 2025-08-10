@@ -1,7 +1,7 @@
 import stocks
 
 def main():
-    stocks.growth_stock()
+    stocks.dividend_stock()
     
 
 if __name__ == "__main__":

@@ -66,6 +66,50 @@ class Stock(ABC):
         plt.grid(True, alpha=0.3)  # Optional: adds a subtle grid
         plt.show() 
 
+class dividend_stock(Stock):
+    #to calculate the overall return on this stock i will need to add the regular dividend onto the return
+    
+    
+    def __init__(self):
+        super().__init__()
+        self.total_dividends = 0
+        
+    def create_stock(self) -> list[float]:
+        days = self.years * 365
+        stock_prices = [self.init_stock_price]
+        
+        current_price = self.init_stock_price
+        quarterly_dividend = 0.15  # £0.15 per share every quarter
+        total_dividends_received = 0
+        
+        for day in range(days):
+            # Very stable daily movements (±0.5% max)
+            if ran.random() < 0.53:  # Slight upward bias
+                daily_change = ran.uniform(1.0001, 1.001)  # Small gains
+            else:
+                daily_change = ran.uniform(0.999, 0.9999)  # Small losses
+                
+            if ran.random() < 0.02: 
+                if ran.random() < 0.5:
+                    # Big gain
+                    daily_change = ran.uniform(1.001, 1.02)
+                else:
+                    # Big loss
+                    daily_change = ran.uniform(0.98, 0.999)
+            
+            # Pay dividend every 90 days (quarterly)
+            if day % 90 == 0 and day > 0:
+                shares_owned = self.investment / self.init_stock_price
+                dividend_payment = shares_owned * quarterly_dividend
+                total_dividends_received += dividend_payment
+                            
+            current_price *= daily_change
+            stock_prices.append(current_price)
+        
+        # Store total dividends for final calculation
+        self.total_dividends = total_dividends_received
+        return stock_prices
+
 
 class growth_stock(Stock):
     
