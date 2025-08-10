@@ -1,6 +1,7 @@
 import random as ran
 from abc import ABC, abstractmethod
 from matplotlib import pyplot as plt
+import math
 
 
 class Stock(ABC):
@@ -11,12 +12,12 @@ class Stock(ABC):
         # self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
         self.investment = 1000
         self.years = 10
-        stock_prices = self.create_stock()
+        stock_prices = self._create_stock()
         self.final_stock_price = stock_prices[-1]
-        self.calc_return()
-        self.plot_stock(stock_prices)
+        self._calc_return()
+        self._plot_stock(stock_prices)
 
-    def calc_return(self):
+    def _calc_return(self):
         self.investment
         self.final_stock_price
         
@@ -41,11 +42,11 @@ class Stock(ABC):
             return self.user_input(type, msg)
     
     @abstractmethod
-    def create_stock(self) -> list[float]:
+    def _create_stock(self) -> list[float]:
         pass
         
 
-    def plot_stock(self, xs):
+    def _plot_stock(self, xs):
         threshold_years = 2  # Change this to whatever threshold you want
         
         if self.years <= threshold_years:
@@ -74,7 +75,7 @@ class dividend_stock(Stock):
         super().__init__()
         self.total_dividends = 0
         
-    def create_stock(self) -> list[float]:
+    def _create_stock(self) -> list[float]:
         days = self.years * 365
         stock_prices = [self.init_stock_price]
         
@@ -110,13 +111,41 @@ class dividend_stock(Stock):
         self.total_dividends = total_dividends_received
         return stock_prices
 
+    def _calc_return(self):
+        no_stocks = self.investment / self.init_stock_price
+        
+        # Calculate stock value gains/losses
+        stock_value = self.final_stock_price * no_stocks
+        
+        # Add dividend income to total return
+        gross = stock_value + self.total_dividends
+        net = round(gross - self.investment, 2)
+        ROI = round(net / self.investment * 100, 2)
+        
+        # Calculate stock-only performance for comparison
+        stock_only_net = round(stock_value - self.investment, 2)
+        stock_only_roi = round(stock_only_net / self.investment * 100, 2)
+        
+        print("Initial Stock Price: £{}".format(self.init_stock_price))
+        print("Initial Investment: £{}".format(self.investment))
+        print("Initial Stocks Bought: {}".format(round(no_stocks, 2)))
+        print("Final Stock Price: £{}".format(round(self.final_stock_price, 2)))
+        print("Stock Value: £{}".format(round(stock_value, 2)))
+        print("Total Dividends Received: £{}".format(round(self.total_dividends, 2)))
+        print("Final Amount (Stock + Dividends): £{}".format(round(gross, 2)))
+        print("Total ROI: {}%".format(ROI))
+        print("Stock-Only ROI: {}%".format(stock_only_roi))
+        print("Dividend Contribution: £{}".format(round(self.total_dividends, 2)))
+        print("Net Return: £{}".format(net))
+        
+        return net
 
 class growth_stock(Stock):
     
     def __init__(self):
         super().__init__()
         
-    def create_stock(self) -> list[float]:
+    def _create_stock(self) -> list[float]:
         days = self.years * 365
         stock_prices = [self.init_stock_price]
         bankrupt_threshold = 0.10 #company declares bankruptcy if stock falls below this value
@@ -143,7 +172,7 @@ class growth_stock(Stock):
                     
                     # Growth stocks have frequent dramatic movements (10% chance)
                     if ran.random() < 0.10:
-                        if ran.random() < 0.45:
+                        if ran.random() < 0.46:
                             # Explosive growth day
                             daily_change = ran.uniform(1.01, 1.02)
                             momentum = min(momentum + 0.1, 1.8)
@@ -195,13 +224,12 @@ class growth_stock(Stock):
         
         return stock_prices
 
-
-class default_stock(Stock):
+class common_stock(Stock):
     
     def __init__(self):
         super().__init__()
         
-    def create_stock(self) -> list[float]:
+    def _create_stock(self) -> list[float]:
         days = self.years * 365
         stock_prices = [self.init_stock_price]
         
