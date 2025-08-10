@@ -81,33 +81,59 @@ class growth_stock(Stock):
         momentum = 1.0  # Tracks current market sentiment
         
         for day in range(days):
-            # Growth stocks have momentum - good days lead to more good days
-            if ran.random() < 0.6:
-                # Normal upward movement (60% chance)
-                daily_change = ran.uniform(1.001, 1.008)
-                momentum = min(momentum + 0.01, 1.5)  # Build positive momentum
-            else:
-                # Downward movement (40% chance)
-                daily_change = ran.uniform(0.990, 0.999)
-                momentum = max(momentum - 0.02, 0.5)  # Lose momentum
-            
-            # Apply momentum effect
-            if momentum > 1.1:
-                daily_change *= ran.uniform(1.005, 1.015)  # Momentum boost
-            elif momentum < 0.8:
-                daily_change *= ran.uniform(0.985, 0.995)  # Momentum drag
-            
-            # Growth stocks have frequent dramatic movements (10% chance)
-            if ran.random() < 0.10:
-                if ran.random() < 0.65:  # 65% chance positive when dramatic
-                    # Explosive growth day (earnings beat, breakthrough, etc.)
-                    daily_change = ran.uniform(1.05, 1.25)
-                    momentum = min(momentum + 0.1, 1.8)
+            if current_price > 100:
+                if ran.random() < 0.6:
+                    # Normal upward movement
+                    daily_change = ran.uniform(1.001, 1.002)
+                    momentum = min(momentum + 0.01, 1.5)  # Build positive momentum
                 else:
-                    # Crash day (bad news, market correction)
-                    daily_change = ran.uniform(0.70, 0.92)
-                    momentum = max(momentum - 0.15, 0.3)
-            
+                    # Downward movement
+                    daily_change = ran.uniform(0.998, 0.999)
+                    momentum = max(momentum - 0.02, 0.5)  # Lose momentum
+                
+                    # Apply momentum effect
+                    if momentum > 1.1:
+                        daily_change *= ran.uniform(1.002, 1.004)  # Momentum boost
+                    elif momentum < 0.8:
+                        daily_change *= ran.uniform(0.996, 0.998)  # Momentum drag
+                    
+                    # Growth stocks have frequent dramatic movements (10% chance)
+                    if ran.random() < 0.10:
+                        if ran.random() < 0.45:
+                            # Explosive growth day
+                            daily_change = ran.uniform(1.01, 1.02)
+                            momentum = min(momentum + 0.1, 1.8)
+                        else:
+                            # Crash day
+                            daily_change = ran.uniform(0.98, 0.99)
+                            momentum = max(momentum - 0.1, 0.3)
+            else:
+                if ran.random() < 0.6:
+                    # Normal upward movement (60% chance)
+                    daily_change = ran.uniform(1.001, 1.008)
+                    momentum = min(momentum + 0.01, 1.5)  # Build positive momentum
+                else:
+                    # Downward movement (40% chance)
+                    daily_change = ran.uniform(0.990, 0.999)
+                    momentum = max(momentum - 0.02, 0.5)  # Lose momentum
+                
+                    # Apply momentum effect
+                    if momentum > 1.1:
+                        daily_change *= ran.uniform(1.005, 1.015)  # Momentum boost
+                    elif momentum < 0.8:
+                        daily_change *= ran.uniform(0.985, 0.995)  # Momentum drag
+                    
+                    # Growth stocks have frequent dramatic movements (10% chance)
+                    if ran.random() < 0.10:
+                        if ran.random() < 0.75:
+                            # Explosive growth day
+                            daily_change = ran.uniform(1.05, 1.2)
+                            momentum = min(momentum + 0.1, 1.8)
+                        else:
+                            # Crash day
+                            daily_change = ran.uniform(0.70, 0.92)
+                            momentum = max(momentum - 0.15, 0.3)
+                
             current_price *= daily_change
             
             # Check for bankruptcy
@@ -119,7 +145,7 @@ class growth_stock(Stock):
                 stock_prices.append(0.0)
                 for _ in range(day + 1, days):
                     stock_prices.append(0.0)
-                break
+                break            
             
             stock_prices.append(current_price)
         

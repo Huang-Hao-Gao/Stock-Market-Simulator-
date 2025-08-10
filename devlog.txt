@@ -7,6 +7,8 @@
 Next steps:
     create more stocks algorithms to have choices to choose from:
         growth stocks
+            it currently will raise the price per stock way to high there needs to be some way for it to plateau at some point otherwise it'll go up to like 20000 per stock. ideally it will plateau at like 2-300 to simulate a growing company that is now big and so it's growth has slowed down. 
+
         dividend stocks
         penny stocks
         cyclical stocks
