@@ -8,10 +8,10 @@ class Stock(ABC):
     
     def __init__(self):
         self.init_stock_price = 10.0
-        # self.investment = self.user_input("Initial Investment", "How much do you want to invest")
-        # self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
-        self.investment = 1000
-        self.years = 10
+        self.investment = self.user_input("Initial Investment", "How much do you want to invest")
+        self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
+        # self.investment = 1000
+        # self.years = 10
         stock_prices = self._create_stock()
         self.final_stock_price = stock_prices[-1]
         self._calc_return()
@@ -27,7 +27,7 @@ class Stock(ABC):
         ROI = round(net / self.investment * 100, 2)
 
         
-        print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nFinal Stock Price: £{}\nFinal Amount: £{}\nReturn: £{}\n Return on Investment: {}%".format(self.init_stock_price, self.investment, round(no_stocks, 2), round(self.final_stock_price, 2), round(gross, 2), net, ROI))
+        print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nYears Invested: {}\nFinal Stock Price: £{}\nFinal Amount: £{}\nReturn: £{}\n Return on Investment: {}%".format(self.init_stock_price, self.investment, round(no_stocks, 2), self.years, round(self.final_stock_price, 2), round(gross, 2), net, ROI))
         return net
 
     def user_input(self, type: str, msg: str) -> int:
