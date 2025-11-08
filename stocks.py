@@ -1,6 +1,7 @@
 import random as ran
 from abc import ABC, abstractmethod
 from matplotlib import pyplot as plt
+import numpy as np
 
 class Stock(ABC):
     
@@ -10,7 +11,9 @@ class Stock(ABC):
         self.investment = investment
         self.years = years
         stock_prices = self._create_stock()
-        self.final_stock_price = stock_prices[-1]
+        # convert to numpy array for consistent numeric handling and faster ops
+        stock_prices = np.asarray(stock_prices, dtype=float)
+        self.final_stock_price = float(stock_prices[-1])
         self._calc_return()
         self._plot_stock(stock_prices)
 
