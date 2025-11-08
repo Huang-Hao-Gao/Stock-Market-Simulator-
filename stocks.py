@@ -1,21 +1,19 @@
 import random as ran
 from abc import ABC, abstractmethod
 from matplotlib import pyplot as plt
-import math
-
 
 class Stock(ABC):
     
-    def __init__(self):
+    def __init__(self, investment, years, stock_name = "Stock"):
+        self.stock_name = stock_name
         self.init_stock_price = 10.0
-        self.investment = self.user_input("Initial Investment", "How much do you want to invest")
-        self.years = self.user_input("No. Yrs to Invest", "How many years do you want to simulate?")
-        # self.investment = 1000
-        # self.years = 10
+        self.investment = investment
+        self.years = years
         stock_prices = self._create_stock()
         self.final_stock_price = stock_prices[-1]
         self._calc_return()
         self._plot_stock(stock_prices)
+
 
     def _calc_return(self):
         self.investment
@@ -26,20 +24,9 @@ class Stock(ABC):
         net = round(gross - self.investment, 2)
         ROI = round(net / self.investment * 100, 2)
 
-        
+        print("\n\n\n")
         print("Initial Stock Price: £{}\nInitial Investment: £{}\nInitial Stocks Bought: {}\nYears Invested: {}\nFinal Stock Price: £{}\nFinal Amount: £{}\nReturn: £{}\n Return on Investment: {}%".format(self.init_stock_price, self.investment, round(no_stocks, 2), self.years, round(self.final_stock_price, 2), round(gross, 2), net, ROI))
         return net
-
-    def user_input(self, type: str, msg: str) -> int:
-        print("{}:".format(msg), end=" ")
-        val = input()
-        try:
-                val = int(val)
-                print("{}: {}\n".format(type, val))
-                return val
-        except ValueError:
-            print("Error: Please enter a valid integer")
-            return self.user_input(type, msg)
     
     @abstractmethod
     def _create_stock(self) -> list[float]:
@@ -54,14 +41,14 @@ class Stock(ABC):
             days = [x for x in range(len(xs))]
             plt.plot(days, xs)
             plt.xlabel("Days")
-            plt.title(f"Stock Price Over {len(xs)} Days")
+            plt.title(f"{self.stock_name} Price Over {len(xs) - 1} Days")
         else:
             # Show years on x-axis
             # Convert day indices to years (day 0 = year 0, day 365 = year 1, etc.)
             days_to_years = [day / 365 for day in range(len(xs))]
             plt.plot(days_to_years, xs)
             plt.xlabel("Years")
-            plt.title(f"Stock Price Over {self.years} Years")
+            plt.title(f"{self.stock_name} Price Over {self.years} Years")
         
         plt.ylabel("Stock Price (£)")
         plt.grid(True, alpha=0.3)  # Optional: adds a subtle grid
@@ -71,8 +58,8 @@ class dividend_stock(Stock):
     #to calculate the overall return on this stock i will need to add the regular dividend onto the return
     
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, investment, years):
+        super().__init__(investment, years, "Dividend Stock")
         self.total_dividends = 0
         
     def _create_stock(self) -> list[float]:
@@ -142,8 +129,8 @@ class dividend_stock(Stock):
 
 class growth_stock(Stock):
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, investment, years):
+        super().__init__(investment, years, "Growth Stock")
         
     def _create_stock(self) -> list[float]:
         days = self.years * 365
@@ -226,8 +213,8 @@ class growth_stock(Stock):
 
 class common_stock(Stock):
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, investment, years):
+        super().__init__(investment, years, "Common Stock")
         
     def _create_stock(self) -> list[float]:
         days = self.years * 365
