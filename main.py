@@ -20,6 +20,11 @@ def choose_stock_class() -> type:
         "c": stocks.common_stock,
         "3": stocks.common_stock,
     }
+    
+    print("Brief overview of stock types:")
+    print("Growth — Fast‑growing, high‑volatility companies aiming for rapid revenue/price gains (e.g., Tesla).")
+    print("Dividend — Stable, cash‑generating firms that pay regular dividends for income (e.g., Lloyds).")
+    print("Common — Regular publicly traded shares representing ownership; mix of income and growth depending on the company (e.g., Tesco")
     while True:
         print("Choose stock type to simulate (growth/dividend/common) or (1/2/3):", end=" ")
         choice = input().strip().lower()
